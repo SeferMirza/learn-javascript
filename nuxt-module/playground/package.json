@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mouseless/nuxt-module": "file:..",
-    "nuxt": "^3.16.1",
-    "@primevue/themes": "^4.2.5"
+    "nuxt": "3.17.7",
+    "@primeuix/themes": "1.2.1"
   }
 }
