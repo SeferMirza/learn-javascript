@@ -1,66 +1,99 @@
 # Node 24
 
+The following sources were consulted in preparing this document.
+
+https://blog.logrocket.com/node-js-24-new/
+https://nodejs.org/en/blog/release/v24.0.0
+ChatGPT
+
 ## V8 engine is updated to version 13.6
 
-- Float16Array
+- Float16Array -> new type
 - Explicit resource management
+  ```javascript
+    import fs from "node:fs/promises";
+
+    await using dir = await fs.opendir("./logs");
+
+    for await (const dirent of dir) {
+    console.log(dirent.name);
+    }
+    // No need to explicitly close the directory
+  ```
 - RegExp.escape
-- WebAssembly Memory64
+  ```javascript
+    const pattern = RegExp.escape("file.*(txt|log)");
+    console.log(pattern); // "file\.\*\(txt\|log\)"
+    const re = new RegExp(pattern);
+  ```
+- WebAssembly Memory64 -> not for us
 - Error.isError
-
-## npm 11
-
-Node.js 24 comes with npm 11
-
-## AsyncLocalStorage defaults to AsyncContextFrame
-
-`AsyncLocalStorage` now uses `AsyncContextFrame` by default, which provides a
-more efficient implementation of asynchronous context tracking.
+  ```javascript
+    console.log(Error.isError(new Error())); // true
+    console.log(Error.isError({})); // false
+  ```
 
 ## URLPattern as a global
 
 The `URLPattern` API is now exposed on the global object, making it easier to
 use without explicit imports.
 
-## Permission Model Improvements
-
-The experimental Permission Model introduced in Node.js 20 has been improved,
-and the flag has been changed from `--experimental-permission` to simply
-`--permission`, indicating its increasing stability and readiness for broader
-adoption.
-
 ## Test Runner Enhancements
 
 The test runner module now automatically waits for subtests to finish,
 eliminating the need to manually await test promises.
 
-## Undici 7
+```javascript
+import test from 'node:test';
 
-Node.js 24 includes Undici 7, which brings numerous improvements to the HTTP
-client capabilities, including better performance and support for newer HTTP
-features.
+// old
+test('parent test', (t) => {
+  await t.test('subtest', async () => {
+    console.log('running subtest');
+  });
+});
 
-## Deprecations and Removals
+// new
+test('parent test', (t) => {
+  t.test('subtest', () => {
+    console.log('running subtest');
+  });
+});
+```
 
-Several APIs have been deprecated or removed in this release:
+## Watch
 
-- Runtime deprecation of url.parse() - use the WHATWG URL API instead
-- Removal of deprecated tls.createSecurePair
-- Runtime deprecation of SlowBuffer
-- Runtime deprecation of instantiating REPL without new
-- Deprecation of using Zlib classes without new
-- Deprecation of passing args to spawn and execFile in child_process
+`--watch-kill-signal` flag added
 
-## Stability & modernization
+## `import.meta.main` is now available
 
-### Deprecated/removed legacy APIs
+Boolean value available in ECMAScript modules, which can be used to detect
+whether the current module was the entry point of the current process.
 
-There are a few legacy APIs deprecated or removed in this release.
+```javascript
+// module.js
+export function foo() {
+  return 'Hello, world';
+}
 
-### URL parsing
+function main() {
+  const message = foo();
+  console.log(message);
+}
 
-`url.parse()` is deprecated. It is recommended that the WHATWG URL API to be
-used as it is more standards-compliant and secure.
+// run if this module is the entry point
+if (import.meta.main) main();
+
+// x.js
+import { foo } from './module.js';
+
+console.log(foo());
+// main() function will not run because import.meta.main is false
+```
+
+## Runtime deprecation of url.parse()
+
+use the WHATWG URL API instead
 
 ```javascript
 // Deprecated (throws runtime warning)
@@ -68,44 +101,11 @@ const parsed = require('url').parse('https://example.com');// alternative
 const parsed = new URL('https://example.com');
 ```
 
-### TLS security upgrade
-
-The deprecated tls.createSecurePair is removed.
-
-```javascript
-// Removed (no longer available)
-require('tls').createSecurePair();
-
-// Use TLSSocket instead
-new tls.TLSSocket(socket, options);
-```
-
-### Deprecation of SlowBuffer
-
-SlowBuffer is deprecated now. If it is used, a runtime warning will be thrown.
-
-```javascript
-// Deprecated (use Buffer.allocUnsafeSlow)
-const slow = new SlowBuffer(10);
-
-// Modern alternative
-const slow = Buffer.allocUnsafeSlow(10);
-```
-
-### Mandatory new keyword for REPL/Zlib classes
-
-It is now runtime-deprecated to create a REPL instance or use Zlib classes
-without the new keyword. This change aims to better align with standard
-JavaScript class conventions.
-
 ## Upgrade to V24
 
-As you plan your upgrade, keep in mind that some APIs and patterns have been
-deprecated. These changes may require updates to legacy code, especially if your
-project uses features like REPL or Zlib without the new keyword, or passes
-arguments incorrectly to child_process methods. Reviewing the official Node.js
-24 release notes and using tools like node --trace-deprecation during testing
-can help you spot and fix these issues early.
+Reviewing the official Node.js 24 release notes and using tools like node
+`--trace-deprecation` during testing can help you spot and fix these issues
+early.
 
 To upgrade, you can use a version manager like nvm. You can install it pretty
 easily with the code below:
@@ -116,8 +116,3 @@ nvm use 24
 ```
 
 That, or you can download the latest version directly from the Node.js website.
-
-Since Node.js 24 will enter LTS in October 2025, now’s the time to explore its
-new features. Whether you’re maintaining node apps or building new projects,
-getting ahead of the curve will help keep your stack secure, stable, and
-future-ready.
