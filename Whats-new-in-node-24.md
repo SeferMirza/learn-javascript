@@ -11,26 +11,26 @@ ChatGPT
 - Float16Array -> new type
 - Explicit resource management
   ```javascript
-    import fs from "node:fs/promises";
+  import fs from "node:fs/promises";
 
-    await using dir = await fs.opendir("./logs");
+  await using dir = await fs.opendir("./logs");
 
-    for await (const dirent of dir) {
+  for await (const dirent of dir) {
     console.log(dirent.name);
-    }
-    // No need to explicitly close the directory
+  }
+  // No need to explicitly close the directory
   ```
 - RegExp.escape
   ```javascript
-    const pattern = RegExp.escape("file.*(txt|log)");
-    console.log(pattern); // "file\.\*\(txt\|log\)"
-    const re = new RegExp(pattern);
+  const pattern = RegExp.escape("file.*(txt|log)");
+  console.log(pattern); // "file\.\*\(txt\|log\)"
+  const re = new RegExp(pattern);
   ```
 - WebAssembly Memory64 -> not for us
 - Error.isError
   ```javascript
-    console.log(Error.isError(new Error())); // true
-    console.log(Error.isError({})); // false
+  console.log(Error.isError(new Error())); // true
+  console.log(Error.isError({})); // false
   ```
 
 ## URLPattern as a global
@@ -44,19 +44,19 @@ The test runner module now automatically waits for subtests to finish,
 eliminating the need to manually await test promises.
 
 ```javascript
-import test from 'node:test';
+import test from "node:test";
 
 // old
-test('parent test', (t) => {
-  await t.test('subtest', async () => {
-    console.log('running subtest');
+test("parent test", (t) => {
+  await t.test("subtest", async () => {
+    console.log("running subtest");
   });
 });
 
 // new
-test('parent test', (t) => {
-  t.test('subtest', () => {
-    console.log('running subtest');
+test("parent test", (t) => {
+  t.test("subtest", () => {
+    console.log("running subtest");
   });
 });
 ```
@@ -73,7 +73,7 @@ whether the current module was the entry point of the current process.
 ```javascript
 // module.js
 export function foo() {
-  return 'Hello, world';
+  return "Hello, world";
 }
 
 function main() {
@@ -84,8 +84,8 @@ function main() {
 // run if this module is the entry point
 if (import.meta.main) main();
 
-// x.js
-import { foo } from './module.js';
+// main.js
+import { foo } from "./module.js";
 
 console.log(foo());
 // main() function will not run because import.meta.main is false
@@ -97,8 +97,8 @@ use the WHATWG URL API instead
 
 ```javascript
 // Deprecated (throws runtime warning)
-const parsed = require('url').parse('https://example.com');// alternative
-const parsed = new URL('https://example.com');
+const parsed = require("url").parse("https://example.com"); // alternative
+const parsed = new URL("https://example.com");
 ```
 
 ## Upgrade to V24
