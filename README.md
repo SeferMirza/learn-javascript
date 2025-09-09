@@ -13,8 +13,8 @@ side.
   Replacement` feature to make our development process easier
 - [nuxt](https://github.com/mouseless/learn-nuxt): The framework we use for
   frontend development
-  - [nuxt-module](nuxt-module/README.md): We use nuxt module for creating 
-    component libraries  
+  - [nuxt-module](nuxt-module/README.md): We use nuxt module for creating
+    component libraries
 
 ## Researches
 
