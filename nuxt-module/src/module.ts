@@ -11,6 +11,14 @@ export default defineNuxtModule({
   },
   // Default configuration options of the Nuxt module
   defaults: {},
+  // Used to indicate that the module is dependent on another Nuxt module
+  moduleDependencies: {},
+  onInstall() {
+    // The module works when first installed.
+  },
+  onUpgrade() {
+    // The module runs every time it is updated.
+  },
   async setup(_options, _nuxt) {
     const resolver = createResolver(import.meta.url)
 
