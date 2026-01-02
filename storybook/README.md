@@ -1,5 +1,11 @@
 # Storybook
 
+> [!WARNING]
+>
+> We don't use storybook so this folder is not maintained any more. To keep
+> `package.json` and `package-lock.json` files, `.backup` suffix is added. This
+> way github dependabot won't create alerts for this folder.
+
 This is a basic storybook research project. This research is canceled due to
 lack of support for vue in storybook and heavy library dependencies that we
 won't be using for our component library.
